@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 
 // Connection URL
-var url = 'mongodb://localhost:27017/EscolaDb';
+var url = 'mongodb://wagner:789789@ds139288.mlab.com:39288/carros_db';
 
 // Use connect method to connect to the server
 MongoClient.connect(url, function(err, db) {
@@ -16,12 +16,12 @@ MongoClient.connect(url, function(err, db) {
 
 var findDocuments = function(db, callback) {
 	  // Get the documents collection
-	  var collection = db.collection('Estudantes');
+	  var collection = db.collection('Carros');
 	  // Find some documents
 	  collection.find({}).toArray(function(err, docs) {
 	    assert.equal(err, null);
 	    console.log("Achou os seguintes registros");
-	    console.log(docs)
+	    //console.log(docs)
 	    callback(docs);
 	  });
 	};
@@ -32,10 +32,9 @@ var findDocuments = function(db, callback) {
 		
 		for (pos in documentos){
 			
-			console.log('Pessoa: '+documentos[pos].nome+' tem idade: '+documentos[pos].idade);
+			console.log('Carro: '+documentos[pos].nome+' fabricado por: '+documentos[pos].marca+', tem velocidade:'+documentos[pos].max_velo);
 			
-		}
-		
+		}		
 		
 	}
 	
