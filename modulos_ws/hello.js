@@ -1,5 +1,10 @@
 
-module.exports.ola = function() {
+var ola = function() {
 
 	console.log('Olá Wagner!');
+}
+
+module.exports=  {
+
+	ola:ola
 }
