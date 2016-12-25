@@ -3,15 +3,13 @@
   "version": "0.0.0",
   "description": "Primeiro Projeto",
   "main": "index.js",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "keywords": [
     "ws"
   ],
   "author": "Wagner",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "mongodb": "~2.2.16"
+    "mongodb": "^2.2.16"
   }
 }
