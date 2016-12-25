@@ -1,0 +1,17 @@
+{
+  "name": "NodeJsTest",
+  "version": "0.0.0",
+  "description": "Primeiro Projeto",
+  "main": "index.js",
+  "scripts": {
+    
+  },
+  "keywords": [
+    "ws"
+  ],
+  "author": "Wagner",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "mongodb": "~2.2.16"
+  }
+}
