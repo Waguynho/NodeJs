@@ -21,8 +21,11 @@ router.get('/carros', function (req, res) {
 
 router.get('/carros/:id', function (req, res) {
 
-      res.status(200).json({carro:"Carro Próprio"});
+  carro_service.FindCarro(req.params.id, function(dados){
+      
+      res.status(200).json(dados);
 
+  });
 });
 
 module.exports = router

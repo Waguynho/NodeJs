@@ -1,5 +1,7 @@
 var express = require('express')
 var app = express()
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());
 
 var carros_route = require('./modulos_ws/carros/carros_route')
 

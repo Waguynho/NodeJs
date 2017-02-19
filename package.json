@@ -10,6 +10,9 @@
   "author": "Wagner",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "mongodb": "^2.2.16"
+    "body-parser": "^1.16.1",
+    "json-stringify-safe": "^5.0.1",
+    "mongodb": "^2.2.16",
+    "objectid": "^3.2.1"
   }
 }
