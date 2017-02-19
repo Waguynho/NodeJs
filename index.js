@@ -1,19 +1,16 @@
-var express = require('express');
-var app = express();
-var carro_service = require('./modulos_ws/carros/carro_service');
+var express = require('express')
+var app = express()
 
+var carros_route = require('./modulos_ws/carros/carros_route')
 
+app.use('/api',carros_route)
 
 app.listen(3000, function () {
     console.log('Servidor escutando na porta: 3000!');
 });
 
-app.get('/carros', function (req, res) {
+app.get('/', function (req, res) {
 
-  carro_service.GetCarros(function(dados){
-
-      res.status(200).json(dados);
-
-  });
+      res.status(200).json({saudacao:"Olá Wagner dos Santos"});
 
 });
