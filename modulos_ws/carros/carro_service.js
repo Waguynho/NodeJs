@@ -1,18 +1,16 @@
 
-var MongoClient = require('mongodb').MongoClient, assert = require('assert');
-// Connection URL
-var url = 'mongodb://wagner:789789@ds139288.mlab.com:39288/carros_db';
+var help_db = require('../db_help')
 
 var nome_colecao = 'Carros';
 
 function GetCarros(callback){
 
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
+help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+    help_db.assert.equal(null, err);
      var collection = db.collection(nome_colecao);
      console.log("Conectou ao servidor remoto");
         collection.find({}).toArray(function(err, docs) {
-          assert.equal(err, null);
+          help_db.assert.equal(err, null);
 
            console.log("Achou Carros");
 
