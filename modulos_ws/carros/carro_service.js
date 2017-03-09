@@ -27,11 +27,7 @@ function FindCarro(id, callback){
 
            var collection = db.collection(nome_colecao);
 
-           help_db.assert.equal(null, err);
-
-           var collection = db.collection(nome_colecao);
-
-           console.log("Foi buscar por ID "+id);
+           console.log("Carro por ID "+id);
 
            collection.findOne({_id: help_db.MongoId.createFromHexString(id)  }, {fields:null/*Trás todos campos*/} ,function(error, docs) {
 
