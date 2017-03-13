@@ -30,8 +30,12 @@ router.get('/pessoas/:id', function (req, res) {
 
 router.post('/pessoas', function (req, res) {
 
-  pessoa_service.CreatePessoa(req.body, function(dados){
+  pessoa_service.CreatePessoa(req.body, function(erro, dados){
 
+      if(erro){
+        res.status(400).json(erro);
+        return;
+      }
       console.log('criou pessoa: '+ dados);
 
       res.status(201).json(dados);
@@ -44,9 +48,12 @@ router.put('/pessoas', function (req, res) {
 
   pessoa_service.UpdatePessoa(req.body, function(dados){
 
-      console.log('atualizou pessoa: '+ dados);
+      if(dados){
+        res.status(400).json(dados);
+        return;
+      }
 
-      res.status(200).json(dados);
+      res.status(200).json(req.body);
 
   });
 
@@ -54,11 +61,15 @@ router.put('/pessoas', function (req, res) {
 
 router.delete('/pessoas/:id', function (req, res) {
 
-  pessoa_service.DeletePessoa(req.params.id, function(dados){
+ pessoa_service.DeletePessoa(req.params.id , function(erro, dados){
 
-      console.log('Deletou pessoa: '+dados);
+      if(erro){
+        res.status(400).json(erro);
+        return;
+      }
+      console.log('deletou pessoa: '+ dados);
 
-      res.status(204).send();
+      res.status(200).json(dados);
 
   });
 });

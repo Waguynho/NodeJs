@@ -1,99 +1,76 @@
 
-var help_db = require('../db_help')
+var help_db = require('./pessoa_schema')
 
-var nome_colecao = 'Pessoas';
+var Pessoa = help_db.Pessoa;
 
 function GetPessoas(callback){
-
-  help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-
-         var collection = db.collection(nome_colecao);
-
-          collection.find({}).toArray(function(err, docs) {
-
-             console.log("Achou Pessoas");
-
-             callback(docs);
-
-             db.close();
-        });
-     });
+    Pessoa.find( function (err, pessoas) {
+        if (err) {
+            return console.log(err);
+        }
+        
+        console.log("api/pessoas => Achou Pessoas");
+        callback(pessoas);
+    })           
 }
 
 function FindPessoa(id, callback){
-
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-
-           var collection = db.collection(nome_colecao);
-
-           console.log("Pessoa por ID "+id);
-
-           collection.findOne({_id: help_db.MongoId.createFromHexString(id)  }, {fields:null/*Trás todos campos*/} ,function(error, docs) {
-
-                  callback(docs);
-
-                  db.close();
-
-          });
-    });
-};
-
+     console.log("api/pessoas => Achou Pessoas");
+}
 function CreatePessoa(pessoa, callback){
+    var novaPessoa = new Pessoa();
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+    novaPessoa.nome = pessoa.nome;
+    novaPessoa.idade = pessoa.idade;
 
-          var collection = db.collection(nome_colecao);
+    novaPessoa.save( function (err, pessoas) {
+        if (err) {
+             callback(err, null);
+             return
+        }        
+        console.log("Criou pessa");
 
-           collection.insertOne(pessoa,function(error, resp) {
-
-                  console.log(resp);
-
-                  callback(resp);
-
-                  db.close();
-
-          });
-    });
-};
-
+        callback(false, novaPessoa);
+    })       
+}
 function UpdatePessoa(pessoa, callback){
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-
-           var collection = db.collection(nome_colecao);
-
-           console.log("Atualiza pessoa por ID "+pessoa._id);
-
-           collection.updateOne({_id: help_db.MongoId.createFromHexString(pessoa._id) }, {$set: {nome: pessoa.nome, idade: pessoa.idade}},
-              { upsert: false  } ,function(error, docs) {
-
-                  callback(docs);
-
-                  db.close();
-          });
+    Pessoa.findById(pessoa._id, function (err, pessoa_update) {
+        if (err) {
+            callback(err, null);
+                return
+        }  
+        pessoa_update.nome = pessoa.nome;
+        pessoa_update.idade = pessoa.idade;
+        pessoa_update.save(callback);
     });
-};
+    
+}
 
 function DeletePessoa(id, callback){
+   Pessoa.findByIdAndRemove(id, function (err, pessoa) {  
+   
+        if(err){
+            callback(err, null);
+            return;
+        }
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+        if(err == null && pessoa == null){
+            callback({erro: 'Pessoa não existe!'}, null);
+            return;
+        }
 
-           var collection = db.collection(nome_colecao);
-
-           console.log("Deletando pessoa com ID: "+id);
-
-           collection.deleteOne({_id: help_db.MongoId.createFromHexString(id)  },function(error, resp) {
-
-                  callback(resp.deletedCount);
-
-                  db.close();
-
-          });
+        var response = {
+            message: "pessoa deletada com sucesso!",
+            id: pessoa._id
+        };
+        callback(false, response);
     });
-};
+  
+}
 
 module.exports =  {
-	GetPessoas: GetPessoas,
+  GetPessoas: GetPessoas,
   FindPessoa: FindPessoa,
   CreatePessoa: CreatePessoa,
   UpdatePessoa: UpdatePessoa,
