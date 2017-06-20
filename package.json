@@ -3,7 +3,9 @@
   "version": "1.0.1",
   "description": "Primeiro Projeto",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+	"start": "node index.js"
+},
   "keywords": [
     "ws"
   ],
