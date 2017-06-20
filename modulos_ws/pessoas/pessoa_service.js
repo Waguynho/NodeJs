@@ -15,7 +15,16 @@ function GetPessoas(callback){
 }
 
 function FindPessoa(id, callback){
-     console.log("api/pessoas => Achou Pessoas");
+     
+     Pessoa.findById(id, function (err, pessoa) { 
+             if (err) {
+                 callback(err, null);
+            }
+
+            callback(null, pessoa);
+
+      } );
+
 }
 function CreatePessoa(pessoa, callback){
     var novaPessoa = new Pessoa();

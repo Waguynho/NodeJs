@@ -2,27 +2,33 @@
 var express = require('express')
 var router = express.Router()
 
-router.use(function timeLog (req, res, next) {
+router.use(function timeLog(req, res, next) {
   console.log('Rota de Carro')
   next()
 })
+
 
 var carro_service = require('./carro_service')
 
 router.get('/carros', function (req, res) {
 
-if (req.query.dono != null) {
-      carro_service.FindByDono(req.query.dono, function(dados){
+  if (req.query.dono != null) {
+    carro_service.FindByDono(req.query.dono, function (erro, dados) {
 
-          res.status(200).json(dados);
-
-      });
-    return;
-}
-
-  carro_service.GetCarros(function(dados){
+      if (erro) {
+        res.status(500).json({ message: erro.message });
+        return;
+      }
 
       res.status(200).json(dados);
+
+    });
+    return;
+  }
+
+  carro_service.GetCarros(function (dados) {
+
+    res.status(200).json(dados);
 
   });
 
@@ -30,20 +36,30 @@ if (req.query.dono != null) {
 
 router.get('/carros/:id', function (req, res) {
 
-  carro_service.FindCarro(req.params.id, function(dados){
+  carro_service.FindCarro(req.params.id, function (erro, dados) {
 
-      res.status(200).json(dados);
+    if (erro) {
+      res.status(500).json({ message: erro.message });
+      return;
+    }
+
+    res.status(200).json(dados);
 
   });
 });
 
 router.post('/carros', function (req, res) {
 
-  carro_service.CreateCarro(req.body, function(dados){
+  carro_service.CreateCarro(req.body, function (erro, dados) {
 
-      console.log('criou: '+ dados);
+    if (erro) {
+      res.status(400).json(erro);
+      return;
+    }
 
-      res.status(201).json(dados);
+    console.log('criou: ' + dados);
+
+    res.status(201).json(dados);
 
   });
 
@@ -51,11 +67,11 @@ router.post('/carros', function (req, res) {
 
 router.put('/carros', function (req, res) {
 
-  carro_service.UpdateCarro(req.body, function(dados){
+  carro_service.UpdateCarro(req.body, function (dados) {
 
-      console.log('atualou: '+ dados);
+    console.log('atualou: ' + dados);
 
-      res.status(200).json(dados);
+    res.status(200).json(dados);
 
   });
 
@@ -63,11 +79,11 @@ router.put('/carros', function (req, res) {
 
 router.delete('/carros/:id', function (req, res) {
 
-  carro_service.DeleteCarro(req.params.id, function(dados){
+  carro_service.DeleteCarro(req.params.id, function (dados) {
 
-      console.log('Deletou: '+dados);
+    console.log('Deletou: ' + dados);
 
-      res.status(204).send();
+    res.status(204).send();
 
   });
 });

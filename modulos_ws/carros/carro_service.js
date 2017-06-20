@@ -1,140 +1,115 @@
 
-var help_db = require('../db_help')
+var help_db = require('./carro_schema')
 
-var nome_colecao = 'Carros';
+var Carro = help_db.Carro;
 
-function GetCarros(callback){
+function GetCarros(callback) {
+    Carro.find(function (err, carros) {
+        if (err) {
+            return console.log(err);
+        }
 
-  help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-      help_db.assert.equal(null, err);
-       var collection = db.collection(nome_colecao);
-       console.log("Conectou ao servidor remoto");
-          collection.find({}).toArray(function(err, docs) {
-            help_db.assert.equal(err, null);
-
-             console.log("Achou Carros");
-
-             callback(docs);
-
-             db.close();
-        });
-     });
+        console.log("api/carros => Achou carros");
+        console.log(carros);
+        callback(carros);
+    })
 }
 
-function FindCarro(id, callback){
+function FindCarro(id, callback) {
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+    Carro.findById(id, function (erro, carro) {
+        if (erro) {
+            callback(erro, null);
+        }
 
-           var collection = db.collection(nome_colecao);
+        callback(null, carro);
 
-           console.log("Carro por ID "+id);
+    })
+}
 
-           collection.findOne({_id: help_db.MongoId.createFromHexString(id)  }, {fields:null/*Trás todos campos*/} ,function(error, docs) {
+function FindByDono(id_dono, callback) {
 
-                  callback(docs);
+    console.log('procurando por dono: %s', id_dono);
+    Carro.find({ dono: id_dono }, function (erro, carro) {
+        if (erro) {
+            callback(erro, null);
+        }
 
-                  db.close();
+        callback(null, carro);
+    })
+}
 
-          });
-    });
-};
+function CreateCarro(carro, callback) {
+    var carroNovo = new Carro();
 
-function FindByDono(id_dono, callback){
+    carroNovo.nome = carro.nome;
+    carroNovo.marca = carro.marca;
+    carroNovo.max_velo = carro.max_velo;
+    carroNovo.dono = carro.dono;
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+    carroNovo.save(function (err, carro) {
+        if (err) {
+            callback(err, null);
+            return
+        }
+        console.log("Criou carro!");
 
-           var collection = db.collection(nome_colecao);
+        callback(false, carroNovo);
+    })
+}
 
-           help_db.assert.equal(null, err);
 
-           var collection = db.collection(nome_colecao);
+function UpdateCarro(carro, callback) {
 
-           console.log("ID Dono"+id_dono);
+    help_db.MongoClient.connect(help_db.URLDB, function (err, db) {
 
-           collection.find({dono: id_dono}).toArray(function(err, docs) {
-               help_db.assert.equal(err, null);
+        var collection = db.collection(nome_colecao);
+
+        help_db.assert.equal(null, err);
+
+        var collection = db.collection(nome_colecao);
+
+        console.log("Atualiza por ID " + carro._id);
+
+        collection.updateOne({ _id: help_db.MongoId.createFromHexString(carro._id) }, { $set: { nome: carro.nome, max_velo: carro.max_velo, marca: carro.marca, dono: carro.dono } },
+            { upsert: false }, function (error, docs) {
 
                 callback(docs);
 
                 db.close();
-         });
+
+            });
     });
 };
 
-function CreateCarro(carro, callback){
+function DeleteCarro(id, callback) {
 
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
+    help_db.MongoClient.connect(help_db.URLDB, function (err, db) {
 
-           var collection = db.collection(nome_colecao);
+        var collection = db.collection(nome_colecao);
 
-           help_db.assert.equal(null, err);
+        help_db.assert.equal(null, err);
 
-           var collection = db.collection(nome_colecao);
+        var collection = db.collection(nome_colecao);
 
-           collection.insertOne(carro,function(error, resp) {
+        console.log("Deletando carro com ID: " + id);
 
-                  console.log(resp);
+        collection.deleteOne({ _id: help_db.MongoId.createFromHexString(id) }, function (error, resp) {
 
-                  callback(resp);
+            callback(resp.deletedCount);
 
-                  db.close();
+            db.close();
 
-          });
-    });
-};
-
-
-function UpdateCarro(carro, callback){
-
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-
-           var collection = db.collection(nome_colecao);
-
-           help_db.assert.equal(null, err);
-
-           var collection = db.collection(nome_colecao);
-
-           console.log("Atualiza por ID "+carro._id);
-
-           collection.updateOne({_id: help_db.MongoId.createFromHexString(carro._id) }, {$set: {nome: carro.nome, max_velo: carro.max_velo, marca: carro.marca, dono: carro.dono}},
-              { upsert: false  } ,function(error, docs) {
-
-                  callback(docs);
-
-                  db.close();
-
-          });
-    });
-};
-
-function DeleteCarro(id, callback){
-
-    help_db.MongoClient.connect(help_db.URLDB, function(err, db) {
-
-           var collection = db.collection(nome_colecao);
-
-           help_db.assert.equal(null, err);
-
-           var collection = db.collection(nome_colecao);
-
-           console.log("Deletando carro com ID: "+id);
-
-           collection.deleteOne({_id: help_db.MongoId.createFromHexString(id)  },function(error, resp) {
-
-                  callback(resp.deletedCount);
-
-                  db.close();
-
-          });
+        });
     });
 };
 
 
-module.exports =  {
-	GetCarros:GetCarros,
-  FindCarro: FindCarro,
-  DeleteCarro: DeleteCarro,
-  CreateCarro: CreateCarro,
-  UpdateCarro: UpdateCarro,
-  FindByDono: FindByDono
+module.exports = {
+    GetCarros: GetCarros,
+    FindCarro: FindCarro,
+    DeleteCarro: DeleteCarro,
+    CreateCarro: CreateCarro,
+    UpdateCarro: UpdateCarro,
+    FindByDono: FindByDono
 }
