@@ -1,4 +1,4 @@
-var express = require('express');
+﻿var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
@@ -19,10 +19,10 @@ app.get('/', function (req, res) {
 
 })
 
+var port = process.env.PORT || 3000;
 
-
-app.listen(3000, function () {
-    console.log('Servidor escutando na porta: 3000!');
+app.listen(port, function () {
+    console.log('Servidor escutando na porta: '+port);
 })
 
 
