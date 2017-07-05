@@ -4,8 +4,8 @@
   "description": "Primeiro Projeto",
   "main": "index.js",
   "scripts": {
-	"start": "node index.js"
-},
+    "start": "node index.js"
+  },
   "keywords": [
     "ws"
   ],
@@ -13,6 +13,8 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "body-parser": "^1.16.1",
+    "express": "^4.15.3",
+    "install": "^0.10.1",
     "json-stringify-safe": "^5.0.1",
     "method-override": "^2.3.9",
     "mongodb": "^2.2.16",
