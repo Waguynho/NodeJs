@@ -2,8 +2,8 @@
 var express = require('express')
 var router = express.Router()
 
-router.use(function timeLog(req, res, next) {
-  console.log('Rota de Pessoas')
+router.use(function infRoute(req, res, next) {
+  
   next()
 })
 

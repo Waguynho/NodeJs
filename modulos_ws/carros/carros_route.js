@@ -1,14 +1,11 @@
 
-var express = require('express')
-var router = express.Router()
+var express = require('express');
+var router = express.Router();
+var carro_service = require('./carro_service');
+var mid = require('../Utils/midwares');
 
-router.use(function timeLog(req, res, next) {
-  console.log('Rota de Carro')
-  next()
-})
+router.use('/carros', mid.infRoute({nameRoute:"Carros"}))//midware personalizdo local
 
-
-var carro_service = require('./carro_service')
 
 router.get('/carros', function (req, res) {
 
@@ -23,16 +20,16 @@ router.get('/carros', function (req, res) {
       res.status(200).json(dados);
 
     });
-    return;
+
+  } else {
+
+    carro_service.GetCarros(function (dados) {
+
+      res.status(200).json(dados);
+
+    });
   }
-
-  carro_service.GetCarros(function (dados) {
-
-    res.status(200).json(dados);
-
-  });
-
-});
+})
 
 router.get('/carros/:id', function (req, res) {
 
@@ -46,7 +43,7 @@ router.get('/carros/:id', function (req, res) {
     res.status(200).json(dados);
 
   });
-});
+})
 
 router.post('/carros', function (req, res) {
 
@@ -63,29 +60,25 @@ router.post('/carros', function (req, res) {
 
   });
 
-});
+})
 
 router.put('/carros', function (req, res) {
 
-  carro_service.UpdateCarro(req.body, function (dados) {
+  carro_service.UpdateCar(req.body, function (dados) {
 
-    console.log('atualou: ' + dados);
+    res.status(200).json(dados);
+    
+  });
+
+})
+
+router.delete('/carros/:id', function (req, res) {
+
+  carro_service.DeleteCar(req.params.id, function (dados) {
 
     res.status(200).json(dados);
 
   });
-
-});
-
-router.delete('/carros/:id', function (req, res) {
-
-  carro_service.DeleteCarro(req.params.id, function (dados) {
-
-    console.log('Deletou: ' + dados);
-
-    res.status(204).send();
-
-  });
-});
+})
 
 module.exports = router

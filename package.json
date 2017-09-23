@@ -22,7 +22,7 @@
     "objectid": "^3.2.1"
   },
   "repository": {
-  "type": "git",
-  "url": "https://github.com/Waguynho/NodeJs.git"
-}
+    "type": "git",
+    "url": "https://github.com/Waguynho/NodeJs.git"
+  }
 }

@@ -1,8 +1,10 @@
 // Connection URL
-var URLDB = 'mongodb://wagner:789789@ds139288.mlab.com:39288/carros_db';
+ config = require('./Utils/config')
 
 var mongoose =  require('mongoose');
-mongoose.connect(URLDB);
+mongoose.connect(config.dbConection, {
+  useMongoClient: true 
+});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
