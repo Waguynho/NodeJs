@@ -6,6 +6,7 @@ var mid = require('../Utils/midwares');
 
 router.use('/carros', mid.infRoute({nameRoute:"Carros"}))//midware personalizdo local
 
+router.use('/carros', mid.verifyToken) //protejo todas as rotas deste serviço
 
 router.get('/carros', function (req, res) {
 
@@ -31,7 +32,7 @@ router.get('/carros', function (req, res) {
   }
 })
 
-router.get('/carros/:id', function (req, res) {
+router.get('/carros/:id',  function (req, res) {
 
   carro_service.FindCarro(req.params.id, function (erro, dados) {
 

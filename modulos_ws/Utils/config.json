@@ -1,3 +1,4 @@
 {
-    "dbConection": "mongodb://wagner:789789@ds139288.mlab.com:39288/carros_db"
+    "dbConection": "mongodb://wagner:789789@ds139288.mlab.com:39288/carros_db",
+    "segredo": "xyz-66w5d54fc1c42a1d47432d99"
 }
