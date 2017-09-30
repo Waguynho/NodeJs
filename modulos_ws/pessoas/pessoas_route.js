@@ -3,80 +3,80 @@ var express = require('express')
 var router = express.Router()
 
 router.use(function infRoute(req, res, next) {
-  
+
   next()
 })
 
 var pessoa_service = require('./pessoa_service')
 
-router.get('/pessoas', function (req, res) {
+router.get('/pessoas', async (req, res) => {
 
-  pessoa_service.GetPessoas(function (dados) {
+  try {
 
-    res.status(200).json(dados);
+    let data = await pessoa_service.GetPersons();
 
-  });
+    res.status(200).json(data);
 
+  } catch (e) {
+
+    res.status(400).json(e.message);
+  }
 });
 
-router.get('/pessoas/:id', function (req, res) {
-  console.log("busca uma pessoa com id: " + req.params.id)
-  pessoa_service.FindPessoa(req.params.id, function (erro, dados) {
+router.get('/pessoas/:id', async (req, res) => {
 
-    if (erro) {
-      res.status(500).json({ message: erro.message });
-      return;
-    }
+  try {
 
-    res.status(200).json(dados);
+    let result = await pessoa_service.FindPerson(req.params.id);
 
-  });
-});
+    res.status(200).json(result);
 
-router.post('/pessoas', function (req, res) {
+  } catch (e) {
 
-  pessoa_service.CreatePessoa(req.body, function (erro, dados) {
+    res.status(400).json(e.message);
+  }
 
-    if (erro) {
-      res.status(400).json(erro);
-      return;
-    }
-    console.log('criou pessoa: ' + dados);
+})
 
-    res.status(201).json(dados);
+router.post('/pessoas', async (req, res) => {
 
-  });
+  try {
+    await pessoa_service.CreatePerson(req.body);
 
-});
+    res.status(201).json();
+  } catch (e) {
 
-router.put('/pessoas', function (req, res) {
+    res.status(400).json(e.message);
+  }
 
-  pessoa_service.UpdatePessoa(req.body, function (dados) {
+})
 
-    if (dados) {
-      res.status(400).json(dados);
-      return;
-    }
+router.put('/pessoas', async (req, res) => {
 
-    res.status(200).json(req.body);
+  try {
 
-  });
+    var resposta = await pessoa_service.UpdatePessoa(req.body);
 
-});
+    res.status(204).json(resposta);
 
-router.delete('/pessoas/:id', function (req, res) {
+  } catch (e) {
 
-  pessoa_service.DeletePessoa(req.params.id, function (erro, dados) {
+    res.status(400).json(e.message);
+  }
+})
 
-    if (erro) {
-      res.status(400).json(erro);
-      return;
-    }
-    console.log('deletou pessoa: ' + dados);
+router.delete('/pessoas/:id', async (req, res) => {
 
-    res.status(200).json(dados);
+  try {
 
-  });
-});
+    let response = await pessoa_service.DeletePerson(req.params.id);
+
+    res.status(200).json(response);
+
+  } catch (e) {
+
+    res.status(400).json(e.message);
+  }
+})
 
 module.exports = router;

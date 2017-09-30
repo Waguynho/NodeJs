@@ -1,87 +1,73 @@
 
-var help_db = require('./pessoa_schema')
+const help_db = require('./pessoa_schema')
 
-var Pessoa = help_db.Pessoa;
+const hash = require('../Utils/hash')
 
-function GetPessoas(callback){
-    Pessoa.find( function (err, pessoas) {
-        if (err) {
-            return console.log(err);
-        }
-        
-        console.log("api/pessoas => Achou Pessoas");
-        callback(pessoas);
-    })           
+const Pessoa = help_db.Pessoa;
+
+module.exports.GetPersons = async () => {
+    let result = await Pessoa.find();
+    return result;
 }
 
-function FindPessoa(id, callback){
-     
-     Pessoa.findById(id, function (err, pessoa) { 
-             if (err) {
-                 callback(err, null);
-            }
+module.exports.FindPerson = async (id) => {
 
-            callback(null, pessoa);
+    result = await Pessoa.findById(id);
 
-      } );
-
+    return result;
 }
-function CreatePessoa(pessoa, callback){
+
+module.exports.CreatePerson = async (pessoa) => {
+
     var novaPessoa = new Pessoa();
 
     novaPessoa.nome = pessoa.nome;
     novaPessoa.idade = pessoa.idade;
+    novaPessoa.login = pessoa.login;
+    novaPessoa.senha = hash.createHash(pessoa.senha);
 
-    novaPessoa.save( function (err, pessoas) {
+    await novaPessoa.save(function (err, data) {
         if (err) {
-             callback(err, null);
-             return
-        }        
-        console.log("Criou pessa");
-
-        callback(false, novaPessoa);
-    })       
+            throw new Error(err);
+        }
+    })
 }
-function UpdatePessoa(pessoa, callback){
+
+module.exports.UpdatePessoa = async (pessoa) => {
 
     Pessoa.findById(pessoa._id, function (err, pessoa_update) {
+
         if (err) {
-            callback(err, null);
-                return
-        }  
+            throw new Error(err);
+        }
+        if (pessoa_update == null) {
+            throw new Error('Não existe uma pessoa com este _id!');
+        }
+
         pessoa_update.nome = pessoa.nome;
         pessoa_update.idade = pessoa.idade;
-        pessoa_update.save(callback);
-    });
+        pessoa_update.login = pessoa.login;
+        pessoa_update.senha = hash.createHash(pessoa.senha);
+
+        pessoa_update.save();
+
+    })
+
+}
+
+module.exports.DeletePerson = async (id) => {
     
-}
+    Pessoa.findByIdAndRemove(id, function (err, pessoa) {
 
-function DeletePessoa(id, callback){
-   Pessoa.findByIdAndRemove(id, function (err, pessoa) {  
-   
-        if(err){
-            callback(err, null);
-            return;
+        if (err) {
+           throw new Error(JSON.stringify(err));
         }
 
-        if(err == null && pessoa == null){
-            callback({erro: 'Pessoa não existe!'}, null);
-            return;
+        if (err == null && pessoa == null) {
+
+            throw new Error('Pessoa não existe!');            
         }
 
-        var response = {
-            message: "pessoa deletada com sucesso!",
-            id: pessoa._id
-        };
-        callback(false, response);
-    });
-  
+    })
 }
 
-module.exports =  {
-  GetPessoas: GetPessoas,
-  FindPessoa: FindPessoa,
-  CreatePessoa: CreatePessoa,
-  UpdatePessoa: UpdatePessoa,
-  DeletePessoa: DeletePessoa
-}
