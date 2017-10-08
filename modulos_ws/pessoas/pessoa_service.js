@@ -17,7 +17,7 @@ module.exports.FindPerson = async (id) => {
     return result;
 }
 
-module.exports.CreatePerson = async (pessoa) => {
+module.exports.CreatePerson = async (pessoa, next) => {
 
     var novaPessoa = new Pessoa();
 
@@ -26,11 +26,14 @@ module.exports.CreatePerson = async (pessoa) => {
     novaPessoa.login = pessoa.login;
     novaPessoa.senha = hash.createHash(pessoa.senha);
 
-    await novaPessoa.save(function (err, data) {
+     novaPessoa.save(function (err, data) {
         if (err) {
-            throw new Error(err);
+            next(err);
         }
-    })
+        novaPessoa = data;
+    });
+
+    return novaPessoa; 
 }
 
 module.exports.UpdatePessoa = async (pessoa) => {
@@ -55,19 +58,21 @@ module.exports.UpdatePessoa = async (pessoa) => {
 
 }
 
-module.exports.DeletePerson = async (id) => {
+module.exports.DeletePerson = async (id, callback) => {
     
-    Pessoa.findByIdAndRemove(id, function (err, pessoa) {
+    let result = await Pessoa.findByIdAndRemove(id, {select: 'nome'} ,  (err, pessoa) => {
 
         if (err) {
-           throw new Error(JSON.stringify(err));
+            callback(err);
+            return;
         }
 
-        if (err == null && pessoa == null) {
+        if ( pessoa == null) {
 
-            throw new Error('Pessoa não existe!');            
+            callback('Não existe pessoa com este _id!');    
+            return;   
         }
-
-    })
+        callback(null);
+    })   
 }
 

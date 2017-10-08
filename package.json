@@ -25,5 +25,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Waguynho/NodeJs.git"
+  },
+  "engines": {
+    "node": "v8.6.0"
   }
 }

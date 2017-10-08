@@ -29,12 +29,15 @@ app.get('/', function (req, res) {
 
 })
 
-app.use(function (err, req, res, next) {
-  console.log("problema: "+err.message);
-  res.status(500).json({"erro":'algo quebrou na aplicação: ' + err.message})
+app.use( (err, req, res, next) => {
+
+  console.log("problema: " + err);
+
+  res.status(500).json(err);
+
 })
 
-app.use(function (req, res, next) {
+app.use( (req, res, next) => {
 
   res.status(404).send("Desculpe, página não encontrada!");
 })

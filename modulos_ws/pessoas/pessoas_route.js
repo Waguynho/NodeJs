@@ -29,7 +29,7 @@ router.get('/pessoas/:id', async (req, res) => {
 
     let result = await pessoa_service.FindPerson(req.params.id);
 
-    res.status(200).json(result);
+    await res.status(200).json(result);
 
   } catch (e) {
 
@@ -38,12 +38,14 @@ router.get('/pessoas/:id', async (req, res) => {
 
 })
 
-router.post('/pessoas', async (req, res) => {
+router.post('/pessoas', async (req, res, next) => {
 
   try {
-    await pessoa_service.CreatePerson(req.body);
 
-    res.status(201).json();
+    let response = await pessoa_service.CreatePerson(req.body, next);
+
+    res.status(201).json(response);
+
   } catch (e) {
 
     res.status(400).json(e.message);
@@ -52,10 +54,11 @@ router.post('/pessoas', async (req, res) => {
 })
 
 router.put('/pessoas', async (req, res) => {
+ 
 
   try {
 
-    var resposta = await pessoa_service.UpdatePessoa(req.body);
+    let resposta = await pessoa_service.UpdatePessoa(req.body);
 
     res.status(204).json(resposta);
 
@@ -65,18 +68,28 @@ router.put('/pessoas', async (req, res) => {
   }
 })
 
-router.delete('/pessoas/:id', async (req, res) => {
+router.delete('/pessoas/:id', async (req, res, next) => {
 
   try {
 
-    let response = await pessoa_service.DeletePerson(req.params.id);
+    await pessoa_service.DeletePerson(req.params.id, function (erro) {
 
-    res.status(200).json(response);
+      if (erro) {
+
+        res.status(400).json(erro);
+
+      } else {
+
+        res.status(204).json();
+      }
+
+    });
 
   } catch (e) {
 
     res.status(400).json(e.message);
   }
+
 })
 
 module.exports = router;
