@@ -19,32 +19,32 @@ module.exports.FindPerson = async (id) => {
 
 module.exports.CreatePerson = async (pessoa, next) => {
 
-    var novaPessoa = new Pessoa();
+    let novaPessoa = new Pessoa();
 
     novaPessoa.nome = pessoa.nome;
     novaPessoa.idade = pessoa.idade;
     novaPessoa.login = pessoa.login;
+
     novaPessoa.senha = hash.createHash(pessoa.senha);
 
-     novaPessoa.save(function (err, data) {
-        if (err) {
-            next(err);
-        }
-        novaPessoa = data;
-    });
+    let newPerson = await novaPessoa.save();
 
-    return novaPessoa; 
+    return newPerson;
 }
 
-module.exports.UpdatePessoa = async (pessoa) => {
+module.exports.UpdatePessoa = async (pessoa, callback) => {
 
-    Pessoa.findById(pessoa._id, function (err, pessoa_update) {
+    Pessoa.findById(pessoa._id, (err, pessoa_update) => {
+
 
         if (err) {
-            throw new Error(err);
+            callback(err, null);
+            return;
         }
+
         if (pessoa_update == null) {
-            throw new Error('Não existe uma pessoa com este _id!');
+            callback('Não existe pessoa com este _id!', null);
+            return;
         }
 
         pessoa_update.nome = pessoa.nome;
@@ -53,26 +53,34 @@ module.exports.UpdatePessoa = async (pessoa) => {
         pessoa_update.senha = hash.createHash(pessoa.senha);
 
         pessoa_update.save();
-
+        callback(null, pessoa_update);
     })
 
 }
 
-module.exports.DeletePerson = async (id, callback) => {
-    
-    let result = await Pessoa.findByIdAndRemove(id, {select: 'nome'} ,  (err, pessoa) => {
+module.exports.DeletePerson = async (id) => {
 
-        if (err) {
-            callback(err);
-            return;
+    let response = null;
+    let problema = false;
+
+    await Pessoa.findByIdAndRemove(id, { select: 'nome' }, async (err, pessoa) => {
+
+        if (pessoa == null) {
+
+            response = 'Não existe pessoa com este _id!';
+            problema = true;
+
+        } else {
+            response = 'registro deletado com sucesso!';
         }
+    });
 
-        if ( pessoa == null) {
+    if (problema) {
+        
+        throw new Error(response)
+    } else {
 
-            callback('Não existe pessoa com este _id!');    
-            return;   
-        }
-        callback(null);
-    })   
+        return response;
+    }
 }
 

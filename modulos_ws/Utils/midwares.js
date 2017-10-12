@@ -1,20 +1,20 @@
-var express = require('express');
-var jwt = require('jsonwebtoken')
-var config = require('./config.json')
+const express = require('express');
+const jwt = require('jsonwebtoken')
+const config = require('./config.json')
 
-var timeLog = function (req, res, next) {
+let timeLog = function (req, res, next) {
     console.log('Tempo: ', new Date( Date.now()));
     next()
 }
 
-var infRoute = function(options) {
+let infRoute = function(options) {
     return function(req, res, next) {
       console.log("Rota: "+options.nameRoute)
       next()
     }
   }
 
-  var verifyToken = function (req, res, next) {
+  let verifyToken = function (req, res, next) {
     console.log('verificando token...')
 
     let token = req.query.token || req.body.token || req.headers.token

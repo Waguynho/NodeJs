@@ -40,56 +40,52 @@ router.get('/pessoas/:id', async (req, res) => {
 
 router.post('/pessoas', async (req, res, next) => {
 
-  try {
+  let response = await pessoa_service.CreatePerson(req.body, next)
+    .then(data => {
 
-    let response = await pessoa_service.CreatePerson(req.body, next);
+      res.status(200).json(data);
 
-    res.status(201).json(response);
+    }).catch(err => {
 
-  } catch (e) {
+      res.status(500).json(err.message);
 
-    res.status(400).json(e.message);
-  }
-
+    })
 })
 
 router.put('/pessoas', async (req, res) => {
- 
+
 
   try {
 
-    let resposta = await pessoa_service.UpdatePessoa(req.body);
-
-    res.status(204).json(resposta);
-
-  } catch (e) {
-
-    res.status(400).json(e.message);
-  }
-})
-
-router.delete('/pessoas/:id', async (req, res, next) => {
-
-  try {
-
-    await pessoa_service.DeletePerson(req.params.id, function (erro) {
+    let resposta = await pessoa_service.UpdatePessoa(req.body, async (erro, data) => {
 
       if (erro) {
 
         res.status(400).json(erro);
 
       } else {
-
-        res.status(204).json();
+        res.status(200).json(data);
       }
-
     });
 
   } catch (e) {
 
     res.status(400).json(e.message);
   }
+})
 
+router.delete('/pessoas/:id', async (req, res, next) => {  
+
+   let response = await pessoa_service.DeletePerson(req.params.id)
+
+    .then(data => {
+
+      res.status(200).json(data);
+
+    }).catch(err => {
+
+      res.status(500).json(err.message);
+    })    
 })
 
 module.exports = router;
