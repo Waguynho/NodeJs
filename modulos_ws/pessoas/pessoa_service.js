@@ -32,29 +32,27 @@ module.exports.CreatePerson = async (pessoa, next) => {
     return newPerson;
 }
 
-module.exports.UpdatePessoa = async (pessoa, callback) => {
+module.exports.UpdatePessoa = async (pessoa) => {
 
-    Pessoa.findById(pessoa._id, (err, pessoa_update) => {
+    let response = null;
+    let problema = false;
 
-
-        if (err) {
-            callback(err, null);
-            return;
-        }
+    await Pessoa.findById(pessoa._id, (err, pessoa_update) => {
 
         if (pessoa_update == null) {
-            callback('Não existe pessoa com este _id!', null);
-            return;
+            response = 'Não existe pessoa com este _id!';
+            problema = true;
+        } else {
+
+            pessoa_update.nome = pessoa.nome;
+            pessoa_update.idade = pessoa.idade;
+            pessoa_update.login = pessoa.login;
+            pessoa_update.senha = hash.createHash(pessoa.senha);
+            response = pessoa_update.save();
         }
-
-        pessoa_update.nome = pessoa.nome;
-        pessoa_update.idade = pessoa.idade;
-        pessoa_update.login = pessoa.login;
-        pessoa_update.senha = hash.createHash(pessoa.senha);
-
-        pessoa_update.save();
-        callback(null, pessoa_update);
     })
+
+    return handleResponseAsync(response, problema);
 
 }
 
@@ -75,8 +73,13 @@ module.exports.DeletePerson = async (id) => {
         }
     });
 
+    return handleResponseAsync(response, ploblema);
+
+}
+
+function handleResponseAsync(response, problema) {
     if (problema) {
-        
+
         throw new Error(response)
     } else {
 

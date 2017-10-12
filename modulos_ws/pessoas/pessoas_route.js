@@ -54,29 +54,20 @@ router.post('/pessoas', async (req, res, next) => {
 
 router.put('/pessoas', async (req, res) => {
 
+  let resposta = await pessoa_service.UpdatePessoa(req.body)
 
-  try {
+    .then(data => {
+      res.status(200).json(data);
+    }
+    ).catch(err => {
 
-    let resposta = await pessoa_service.UpdatePessoa(req.body, async (erro, data) => {
-
-      if (erro) {
-
-        res.status(400).json(erro);
-
-      } else {
-        res.status(200).json(data);
-      }
-    });
-
-  } catch (e) {
-
-    res.status(400).json(e.message);
-  }
+      res.status(500).json(err.message);
+    })
 })
 
-router.delete('/pessoas/:id', async (req, res, next) => {  
+router.delete('/pessoas/:id', async (req, res, next) => {
 
-   let response = await pessoa_service.DeletePerson(req.params.id)
+  let response = await pessoa_service.DeletePerson(req.params.id)
 
     .then(data => {
 
@@ -85,7 +76,7 @@ router.delete('/pessoas/:id', async (req, res, next) => {
     }).catch(err => {
 
       res.status(500).json(err.message);
-    })    
+    })
 })
 
 module.exports = router;
