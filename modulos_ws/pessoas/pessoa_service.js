@@ -73,7 +73,7 @@ module.exports.DeletePerson = async (id) => {
         }
     });
 
-    return handleResponseAsync(response, ploblema);
+    return handleResponseAsync(response, problema);
 
 }
 
