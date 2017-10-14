@@ -33,7 +33,7 @@ app.use( (err, req, res, next) => {
 
   console.log("problema: " + err);
 
-  res.status(500).json(err);
+  res.status(500).json({message: err.toString()}); 
 
 })
 

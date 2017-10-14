@@ -15,7 +15,7 @@ router.post('/authenticate', function (req, res) {
     } else {
 
         var token = jwt.sign({ nome: 'Wagner Santos' }, config.segredo, {
-            expiresIn: '15M'
+            expiresIn: '45M'
         });
 
         res.json({ mensagem: 'Bem vindo', token: token }).status(200);

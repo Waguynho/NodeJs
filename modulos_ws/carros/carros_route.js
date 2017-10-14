@@ -1,49 +1,43 @@
 
-var express = require('express');
-var router = express.Router();
-var carro_service = require('./carro_service');
-var mid = require('../Utils/midwares');
+const express = require('express');
+const router = express.Router();
 
-router.use('/carros', mid.infRoute({nameRoute:"Carros"}))//midware personalizdo local
+const carro_service = require('./carro_service');
+const mid = require('../Utils/midwares');
+
+router.use('/carros', mid.infRoute({ nameRoute: "Carros" }))//midware personalizdo local
 
 router.use('/carros', mid.verifyToken) //protejo todas as rotas deste serviço
 
-router.get('/carros', function (req, res) {
+router.get('/carros', async (req, res) => {
 
   if (req.query.dono != null) {
-    carro_service.FindByDono(req.query.dono, function (erro, dados) {
 
-      if (erro) {
-        res.status(500).json({ message: erro.message });
-        return;
-      }
+    let carros = await carro_service.FindByDono(req.query.dono);
 
-      res.status(200).json(dados);
-
-    });
+    res.status(200).json(carros);
 
   } else {
 
-    carro_service.GetCarros(function (dados) {
+    let carros = await carro_service.GetCarros();
 
-      res.status(200).json(dados);
+    res.status(200).json(carros);
 
-    });
   }
 })
 
-router.get('/carros/:id',  function (req, res) {
+router.get('/carros/:id', async (req, res) => {
 
-  carro_service.FindCarro(req.params.id, function (erro, dados) {
+  try {
 
-    if (erro) {
-      res.status(500).json({ message: erro.message });
-      return;
-    }
+    let carro = await carro_service.FindCarro(req.params.id);
 
-    res.status(200).json(dados);
+    res.status(200).json(carro);
 
-  });
+  } catch (error) {
+    res.status(400).json({message:error.message});
+  }
+
 })
 
 router.post('/carros', function (req, res) {
@@ -68,7 +62,7 @@ router.put('/carros', function (req, res) {
   carro_service.UpdateCar(req.body, function (dados) {
 
     res.status(200).json(dados);
-    
+
   });
 
 })

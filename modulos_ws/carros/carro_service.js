@@ -1,41 +1,31 @@
 
-var help_db = require('./carro_schema')
+const help_db = require('./carro_schema');
+let ObjectId = require('mongoose').Types.ObjectId; 
+const Carro = help_db.Carro;
 
+module.exports.GetCarros = async () => {
 
-var Carro = help_db.Carro;
+  let result = await Carro.find({}).populate({path:'dono', select:'nome idade'}).exec();
 
-function GetCarros(callback) {
-
-    Carro.find(function (err, carros) {
-        if (err) {
-            return console.log(err)
-        }
-        callback(carros)
-    })
+  return result;
 }
 
-function FindCarro(id, callback) {
+module.exports.FindCarro= async(id) => {
 
-    Carro.findById(id, function (erro, carro) {
-        if (erro) {
-            callback(erro, null);
-        }
+    let result = await Carro.findById(id).populate({path:'dono', select:'nome login'}).exec();;
 
-        callback(null, carro);
-
-    })
+    return result;
 }
 
-function FindByDono(id_dono, callback) {
+module.exports.FindByDono = async (id_dono) => {
+    
+  let dono_ref = ObjectId.createFromHexString(id_dono);
 
-    console.log('procurando por dono: %s', id_dono);
-    Carro.find({ dono: id_dono }, function (erro, carro) {
-        if (erro) {
-            callback(erro, null);
-        }
+  console.log(id_dono);
 
-        callback(null, carro);
-    })
+  let result = await  Carro.find({ dono: id_dono}).populate({path:'dono', select:'nome idade'}).exec();
+
+  return result;
 }
 
 function CreateCarro(carro, callback) {
@@ -58,7 +48,9 @@ function CreateCarro(carro, callback) {
 }
 
 
-function UpdateCar(carro, callback) {
+module.exports.UpdateCar = (carro, callback) => {
+
+    carro.dono = ObjectId(carro.dono);
 
     Carro.findOneAndUpdate({ _id: carro._id }, carro, function (err, response) {
 
@@ -83,11 +75,3 @@ function DeleteCar(id, callback) {
     });
 }
 
-module.exports = {
-    GetCarros: GetCarros,
-    FindCarro: FindCarro,
-    DeleteCar: DeleteCar,
-    CreateCarro: CreateCarro,
-    UpdateCar: UpdateCar,
-    FindByDono: FindByDono
-}
