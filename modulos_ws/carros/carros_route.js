@@ -11,18 +11,22 @@ router.use('/carros', mid.verifyToken) //protejo todas as rotas deste serviço
 
 router.get('/carros', async (req, res) => {
 
-  if (req.query.dono != null) {
+  try {
+    if (req.query.dono != null) {
 
-    let carros = await carro_service.FindByDono(req.query.dono);
+      let carros = await carro_service.FindByDono(req.query.dono);
 
-    res.status(200).json(carros);
+      res.status(200).json(carros);
 
-  } else {
+    } else {
 
-    let carros = await carro_service.GetCarros();
+      let carros = await carro_service.GetCarros();
 
-    res.status(200).json(carros);
+      res.status(200).json(carros);
 
+    }
+  } catch (error) {
+    res.status(500).json(error.message);
   }
 })
 
@@ -35,45 +39,46 @@ router.get('/carros/:id', async (req, res) => {
     res.status(200).json(carro);
 
   } catch (error) {
-    res.status(400).json({message:error.message});
+    res.status(400).json({ message: error.message });
   }
 
 })
 
-router.post('/carros', function (req, res) {
+router.post('/carros', async (req, res) => {
 
-  carro_service.CreateCarro(req.body, function (erro, dados) {
-
-    if (erro) {
-      res.status(400).json(erro);
-      return;
+  carro_service.CreateCarro(req.body)
+    .then(data => {
+      res.status(201).json(data);
     }
+    ).catch(err => {
 
-    console.log('criou: ' + dados);
-
-    res.status(201).json(dados);
-
-  });
+      res.status(500).json(err.message);
+    })
 
 })
 
-router.put('/carros', function (req, res) {
+router.put('/carros', async (req, res) => {
 
-  carro_service.UpdateCar(req.body, function (dados) {
+  carro_service.UpdateCar(req.body)
+    .then(data => {
+      res.status(200).json(data);
+    }
+    ).catch(err => {
 
-    res.status(200).json(dados);
-
-  });
-
+      res.status(500).json(err.message);
+    })
 })
 
 router.delete('/carros/:id', function (req, res) {
 
-  carro_service.DeleteCar(req.params.id, function (dados) {
+  carro_service.DeleteCar(req.params.id)
+    .then(data => {
+      res.status(204).json(data);
+    }
+    ).catch(err => {
 
-    res.status(200).json(dados);
-
-  });
+      res.status(500).json(err.message);
+    })
 })
 
 module.exports = router

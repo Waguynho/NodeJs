@@ -1,13 +1,12 @@
 
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
+const mid = require('../Utils/midwares');
 
-router.use(function infRoute(req, res, next) {
 
-  next()
-})
+router.use(mid.infRoute({ nameRoute: "Pessoas" }));
 
-var pessoa_service = require('./pessoa_service')
+const pessoa_service = require('./pessoa_service');
 
 router.get('/pessoas', async (req, res) => {
 
