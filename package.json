@@ -13,14 +13,16 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "body-parser": "^1.16.1",
+    "cors": "^2.8.4",
     "express": "^4.15.3",
     "install": "^0.10.1",
+    "jshint": "^2.9.5",
     "json-stringify-safe": "^5.0.1",
+    "jsonwebtoken": "^8.0.1",
     "method-override": "^2.3.9",
     "mongodb": "^2.2.16",
     "mongoose": "^4.12.1",
-    "objectid": "^3.2.1",
-    "jsonwebtoken": "^8.0.1"
+    "objectid": "^3.2.1"
   },
   "repository": {
     "type": "git",
@@ -29,5 +31,11 @@
   "engines": {
     "node": "v8.6.0",
     "npm": "5.4.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-react": "^7.4.0"
   }
 }

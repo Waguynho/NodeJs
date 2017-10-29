@@ -1,18 +1,18 @@
-﻿var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-
+﻿const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const cors = require('cors')
 const mid = require('./modulos_ws/Utils/midwares');
 
-
+app.use(cors())
 
 app.use(bodyParser.urlencoded({  // to support URL-encoded bodies
   extended: true
 }));
 
-var carros_route = require('./modulos_ws/carros/carros_route')
-var pessoas_route = require('./modulos_ws/pessoas/pessoas_route')
-var auth = require('./modulos_ws/Utils/auth')
+const carros_route = require('./modulos_ws/carros/carros_route')
+const pessoas_route = require('./modulos_ws/pessoas/pessoas_route')
+const auth = require('./modulos_ws/Utils/auth')
 
 app.use(mid.timeLog)//midware personalizdo global
 app.use(bodyParser.json())
@@ -43,7 +43,7 @@ app.use( (req, res, next) => {
 })
 
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 app.listen(port, function () {
   console.log('Servidor escutando na porta: ' + port);
