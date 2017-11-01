@@ -18,8 +18,12 @@ module.exports.FindPerson = async (id) => {
 }
 
 module.exports.FindByCredentials = async (login, password) => {
+
+    if(login == "" || password == ""){
+        throw new Error("login e senha são obrigatórios!");
+    }
     
-        let cryptoPassWord = await hash.createHash(password);
+    let cryptoPassWord = await hash.createHash(password);
 
        let result = await Pessoa.findOne({login: login, senha: cryptoPassWord},'nome idade' , function(err,obj) { 
           
