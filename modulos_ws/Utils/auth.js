@@ -1,25 +1,30 @@
 
 
-var express = require('express')
-var router = express.Router()
-var jwt = require('jsonwebtoken')
+const express = require('express')
+const router = express.Router()
+const jwt = require('jsonwebtoken')
+let pessoa_service = require('../pessoas/pessoa_service')
+const config = require('./config.json')
 
-var config = require('./config.json')
-
-router.post('/authenticate', function (req, res) {
+router.post('/authenticate', async (req, res) => {
+    
     console.log(req.body);
-    if (req.body.login != 'ws' || req.body.senha != 123) {
+   
+    let person = await  pessoa_service.FindByCredentials(req.body.login, req.body.senha);
+    
+    if( person == null){
 
-        throw new Error( 'Senha ou usuário incorretos!' );
-        
-    } else {
+        res.status(400).json({messagem: 'Senha ou usuário incorretos!'});
+    }else{
 
-        var token = jwt.sign({ nome: 'Wagner Santos' }, config.segredo, {
+        let token = jwt.sign(person._doc, config.segredo, {
             expiresIn: '45M'
         });
 
-        res.json({ mensagem: 'Bem vindo', token: token }).status(200);
-    }
+        res.status(200).json({ mensagem: 'Bem vindo', token: token, user: person });
+
+    }    
+    
 })
 
 router.get('/authenticate', function (req, res) {

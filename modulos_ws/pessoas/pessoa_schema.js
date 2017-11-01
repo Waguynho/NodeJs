@@ -17,6 +17,12 @@ var PessoaSchema = help_db.mongoose.Schema({
     type: String,
     required: [true,'Login é obrigatório'],
     minlength : [3, 'Login deve ter pelo menos 3 caracters!'],
+  },
+
+  senha: {
+    type: String,
+    required: [true,'Senha é obrigatória'],
+    minlength : [3, 'Senha deve ter pelo menos 3 caracters!'],
   }
 
 });

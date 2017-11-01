@@ -2,11 +2,11 @@
 const express = require('express')
 const router = express.Router()
 const mid = require('../Utils/midwares');
-
+const pessoa_service = require('./pessoa_service');
 
 router.use(mid.infRoute({ nameRoute: "Pessoas" }));
 
-const pessoa_service = require('./pessoa_service');
+
 
 router.get('/pessoas', async (req, res) => {
 

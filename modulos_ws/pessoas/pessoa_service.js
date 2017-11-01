@@ -17,6 +17,18 @@ module.exports.FindPerson = async (id) => {
     return result;
 }
 
+module.exports.FindByCredentials = async (login, password) => {
+    
+        let cryptoPassWord = await hash.createHash(password);
+
+       let result = await Pessoa.findOne({login: login, senha: cryptoPassWord},'nome idade' , function(err,obj) { 
+          
+           console.log(err); 
+        });
+    
+        return result;
+    }
+
 module.exports.CreatePerson = async (pessoa, next) => {
 
     let novaPessoa = new Pessoa();
