@@ -1,7 +1,8 @@
 
-let help_db = require('../db_help')
-let Schema = help_db.mongoose.Schema;
-let CarroSchema = help_db.mongoose.Schema({
+let helpDb = require('../db_help')
+let Schema = helpDb.mongoose.Schema;
+
+let CarSchema = helpDb.mongoose.Schema({
     nome: {
         type: String,
         required: true
@@ -19,9 +20,8 @@ let CarroSchema = help_db.mongoose.Schema({
       dono:  { type: Schema.Types.ObjectId, ref: 'pessoas' }
 });
 
-
-let Carro = help_db.mongoose.model('Carros', CarroSchema);
+let Car = helpDb.mongoose.model('Carros', CarSchema);
 
 module.exports = {
-  Carro:Carro
+  Car:Car
 }

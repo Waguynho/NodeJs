@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const carro_service = require('./carro_service');
+const carService = require('./carro_service');
 const mid = require('../Utils/midwares');
 
 router.use('/carros', mid.infRoute({ nameRoute: "Carros" }))//midware personalizdo local
@@ -14,13 +14,13 @@ router.get('/carros', async (req, res) => {
   try {
     if (req.query.dono != null) {
 
-      let carros = await carro_service.FindByDono(req.query.dono);
+      let carros = await carService.FindByOwner(req.query.dono);
 
       res.status(200).json(carros);
 
     } else {
 
-      let carros = await carro_service.GetCarros();
+      let carros = await carService.GetCars();
 
       res.status(200).json(carros);
 
@@ -34,7 +34,7 @@ router.get('/carros/:id', async (req, res) => {
 
   try {
 
-    let carro = await carro_service.FindCarro(req.params.id);
+    let carro = await carService.FindCar(req.params.id);
 
     res.status(200).json(carro);
 
@@ -46,7 +46,7 @@ router.get('/carros/:id', async (req, res) => {
 
 router.post('/carros', async (req, res) => {
 
-  carro_service.CreateCarro(req.body)
+  carService.CreateCar(req.body)
     .then(data => {
       res.status(201).json(data);
     }
@@ -59,7 +59,7 @@ router.post('/carros', async (req, res) => {
 
 router.put('/carros', async (req, res) => {
 
-  carro_service.UpdateCar(req.body)
+  carService.UpdateCar(req.body)
     .then(data => {
       res.status(200).json(data);
     }
@@ -71,7 +71,7 @@ router.put('/carros', async (req, res) => {
 
 router.delete('/carros/:id', function (req, res) {
 
-  carro_service.DeleteCar(req.params.id)
+  carService.DeleteCar(req.params.id)
     .then(data => {
       res.status(204).json(data);
     }
