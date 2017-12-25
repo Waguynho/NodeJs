@@ -25,6 +25,8 @@ router.get('/carros', async (req, res) => {
 
       res.setHeader('Quantity', carros.quantity);
 
+      res.setHeader('Access-Control-Expose-Headers', 'Quantity');
+
       res.status(200).json(carros);
 
     }
