@@ -1,17 +1,19 @@
 const helpDb = require('./carro_schema');
 const Car = helpDb.Car;
 
-module.exports.GetCars = async () => {
-  
-	let  result = await Car.find({}).populate({ path: "dono", select: 'nome idade' }).exec();
+module.exports.GetCars = async (start) => {	
 
-  	return result;
+	let result = await Car.find({}).skip(parseInt(start)).limit(8).populate({ path: "dono", select: 'nome idade' }).exec();
+	
+	result.quantity = await Car.find({}).count();
+	
+	return result;
 };
 
-module.exports.FindCar = async (id) =>{
+module.exports.FindCar = async (id) => {
 	let result = await Car.findById(id).populate({ path: 'dono', select: 'nome login' }).exec();
-	
-	return result;  
+
+	return result;
 };
 
 module.exports.FindByOwner = async (idDono) => {

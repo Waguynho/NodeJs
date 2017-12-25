@@ -15,12 +15,15 @@ router.get('/carros', async (req, res) => {
     if (req.query.dono != null) {
 
       let carros = await carService.FindByOwner(req.query.dono);
+   
 
       res.status(200).json(carros);
 
     } else {
 
-      let carros = await carService.GetCars();
+      let carros = await carService.GetCars(req.query.start);
+
+      res.setHeader('Quantity', carros.quantity);
 
       res.status(200).json(carros);
 

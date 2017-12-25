@@ -13,7 +13,7 @@ router.get('/pessoas', async (req, res) => {
   try {
 
     let data = await pessoa_service.GetPersons();
-
+    
     res.status(200).json(data);
 
   } catch (e) {

@@ -2,6 +2,7 @@
  config = require('./Utils/config')
 
 var mongoose =  require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect(config.dbConection, {
   useMongoClient: true 
 });
