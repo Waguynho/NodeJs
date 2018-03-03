@@ -25,7 +25,7 @@ app.use('/api', auth)
 
 app.get('/', function (req, res) {
 
-  res.status(200).json({ saudacao: "Olá Wagner dos Santos" });
+  res.status(200).json({ saudacao: "Olá Wagner" });
 
 })
 
