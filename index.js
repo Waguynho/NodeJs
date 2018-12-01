@@ -21,17 +21,15 @@ app.use('/api', carros_route);
 app.use('/api', pessoas_route);
 app.use('/api', auth)
 
-
-
 app.get('/', function (req, res) {
 
-  res.status(200).json({ saudacao: "Olá Wagner" });
+  res.status(200).json({ saudacao: "Helo Wagner Santos!" });
 
 })
 
 app.use( (err, req, res, next) => {
 
-  console.log("problema: " + err);
+  console.log("problem is: " + err);
 
   res.status(500).json({message: err.toString()}); 
 
@@ -41,7 +39,6 @@ app.use( (req, res, next) => {
 
   res.status(404).send("Desculpe, página não encontrada!");
 })
-
 
 const port = process.env.PORT || 3000;
 
